@@ -10,7 +10,11 @@
     "strict": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "removeComments": true
+    "removeComments": true,
+    "strictNullChecks": true,
+    "declaration": true,
+    "composite": true,
+    "declarationMap": true
   },
   "ts-node": {
     "esm": true

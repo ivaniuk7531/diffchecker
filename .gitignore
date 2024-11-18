@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/node,yarn,visualstudiocode,webstorm+all
-# Edit at https://www.toptal.com/developers/gitignore?templates=node,yarn,visualstudiocode,webstorm+all
+# Created by https://www.toptal.com/developers/gitignore/api/node,webstorm+all,visualstudiocode,yarn
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,webstorm+all,visualstudiocode,yarn
 
 ### Node ###
 # Logs
@@ -268,4 +268,7 @@ fabric.properties
 # and uncomment the following lines
 # .pnp.*
 
-# End of https://www.toptal.com/developers/gitignore/api/node,yarn,visualstudiocode,webstorm+all
+# Custom
+test
+
+# End of https://www.toptal.com/developers/gitignore/api/node,webstorm+all,visualstudiocode,yarn
