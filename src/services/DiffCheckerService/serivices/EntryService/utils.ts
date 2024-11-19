@@ -6,7 +6,8 @@ import {
   FileEquality,
   FileEqualityAsync,
   FileEqualityPromise,
-  DiffReason
+  DiffReason,
+  HashAlgorithms
 } from './types.js';
 import { IExtraOptions } from '../../types.js';
 
@@ -211,8 +212,11 @@ export function hasIdenticalLink(path1: string, path2: string): boolean {
   return fs.readlinkSync(path1) === fs.readlinkSync(path2);
 }
 
-export const createHashFromFile = async (filePath: string): Promise<string> => {
-  const hash = createHash('sha1');
+export const createHashFromFile = async (
+  filePath: string,
+  algorithm: HashAlgorithms = HashAlgorithms.sha1
+): Promise<string> => {
+  const hash = createHash(algorithm);
   const stream = fs.createReadStream(filePath);
 
   return new Promise((resolve, reject) => {

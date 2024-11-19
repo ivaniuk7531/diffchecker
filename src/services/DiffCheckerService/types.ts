@@ -8,7 +8,8 @@ import {
   DiffSet,
   IEntry,
   DiffReason,
-  DifferenceType
+  DifferenceType,
+  HashAlgorithms
 } from './serivices/EntryService/index.js';
 import { PermissionDeniedState } from './serivices/PermissionService/index.js';
 
@@ -32,6 +33,11 @@ export interface IOptions {
    * Usually one of `compareSize` or `compareContent` or `compareFileHash` options has to be activated. Otherwise files are compared by name disregarding size or content.
    */
   compareFileHash?: boolean;
+
+  /**
+   * The hashing algorithms are used to generate a fixed-size hash value from the file. Defaults to 'sha1'.
+   */
+  hashAlgorithm?: HashAlgorithms;
 
   /**
    * Compares files by content. Defaults to 'false'.

@@ -8,7 +8,8 @@ import {
   IDifference,
   AsyncDiffSet,
   DiffSet,
-  OptionalDiffSet
+  OptionalDiffSet,
+  HashAlgorithms
 } from './types.js';
 import { EntryService } from './service.js';
 
@@ -20,6 +21,7 @@ export {
   type AsyncDiffSet,
   type DiffSet,
   type OptionalDiffSet,
+  HashAlgorithms,
   DifferenceState,
   DiffReason,
   DifferenceType,

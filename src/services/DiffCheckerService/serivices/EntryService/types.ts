@@ -23,6 +23,13 @@ export enum DiffReason {
   PERMISSION_DENIED = 'PERMISSION_DENIED'
 }
 
+export enum HashAlgorithms {
+  md5 = 'md5',
+  sha1 = 'sha1',
+  sha256 = 'sha256',
+  sha512 = 'sha512'
+}
+
 export enum DifferenceType {
   MISSING = 'MISSING',
   FILE = 'FILE',
