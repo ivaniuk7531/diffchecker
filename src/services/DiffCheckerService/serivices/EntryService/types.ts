@@ -129,6 +129,9 @@ export interface IDifference {
 
   size2?: number;
 
+  fileHash1?: null | string;
+  fileHash2?: null | string;
+
   date1?: Date;
 
   date2?: Date;

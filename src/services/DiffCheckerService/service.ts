@@ -185,6 +185,8 @@ export class DiffCheckerService {
       type1: EntryService.getType(entry1),
       type2: EntryService.getType(entry2),
       level: level,
+      fileHash1: entry1 ? entry1.fileHash : null,
+      fileHash2: entry2 ? entry2.fileHash : null,
       size1: entry1 ? entry1.stat.size : undefined,
       size2: entry2 ? entry2.stat.size : undefined,
       date1: entry1 ? entry1.stat.mtime : undefined,
