@@ -8,15 +8,15 @@ import {
   EntryService,
   OptionalDiffSet,
   DiffReason
-} from './serivices/EntryService/index.js';
+} from './services/EntryService/index.js';
 import {
   IStatistics,
   StatisticsService
-} from './serivices/StatisticsService/index.js';
+} from './services/StatisticsService/index.js';
 import { ROOT_PATH } from './constants.js';
-import { SymlinkService } from './serivices/SymlinkService/index.js';
-import { ComparisonService } from './serivices/ComparisonService/index.js';
-import { FilterService } from './serivices/FilterService/service.js';
+import { SymlinkService } from './services/SymlinkService/index.js';
+import { ComparisonService } from './services/ComparisonService/index.js';
+import { FilterService } from './services/FilterService/service.js';
 import { realPath } from './utils.js';
 import {
   CompareInfo,
@@ -27,7 +27,7 @@ import {
   ResultBuilder,
   CompareMode
 } from './types.js';
-import { PermissionDeniedState } from './serivices/PermissionService/index.js';
+import { PermissionDeniedState } from './services/PermissionService/index.js';
 
 export class DiffCheckerService {
   static async compare(

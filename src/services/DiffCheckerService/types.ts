@@ -2,7 +2,7 @@ import fs from 'fs';
 import {
   IInitialStatistics,
   IStatistics
-} from './serivices/StatisticsService/index.js';
+} from './services/StatisticsService/index.js';
 import {
   DifferenceState,
   DiffSet,
@@ -10,8 +10,8 @@ import {
   DiffReason,
   DifferenceType,
   HashAlgorithms
-} from './serivices/EntryService/index.js';
-import { PermissionDeniedState } from './serivices/PermissionService/index.js';
+} from './services/EntryService/index.js';
+import { PermissionDeniedState } from './services/PermissionService/index.js';
 
 export type RealPathOptions =
   | { encoding?: BufferEncoding | null }
