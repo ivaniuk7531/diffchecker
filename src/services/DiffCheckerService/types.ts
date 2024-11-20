@@ -90,14 +90,14 @@ export interface IOptions {
   noDiffSet?: boolean;
 
   /**
-   * File name filter. Comma separated minimatch patterns.
+   * File name filter. Array with minimatch patterns.
    */
-  includeFilter?: string;
+  includeFilter?: string[];
 
   /**
-   * File/directory name exclude filter. Comma separated minimatch patterns.
+   * File/directory name exclude filter. Array with minimatch patterns.
    */
-  excludeFilter?: string;
+  excludeFilter?: string[];
 
   /**
    * Handle permission denied errors. Defaults to 'false'.
