@@ -10,7 +10,7 @@ import {
   FileLineReaderService,
   IFileLineReaderServiceResult
 } from './services/FileLineReaderService/index.js';
-import { IOptions } from '../../types.js';
+import { IDiffCheckerServiceOptions } from '../../types.js';
 
 const fdQueue = new FileDescriptorQueueService(MAX_CONCURRENT_FILE_COMPARE * 2);
 const bufferPool = new BufferPoolService(BUF_SIZE, MAX_CONCURRENT_FILE_COMPARE); // fdQueue guarantees there will be no more than MAX_CONCURRENT_FILE_COMPARE async processes accessing the buffers concurrently
@@ -21,7 +21,7 @@ export class ComparisonService {
     stat1: fs.Stats,
     path2: string,
     stat2: fs.Stats,
-    options: IOptions
+    options: IDiffCheckerServiceOptions
   ): Promise<boolean> {
     const bufferSize = Math.min(
       BUF_SIZE,
@@ -87,7 +87,7 @@ export class ComparisonService {
   static compareLineBatches(
     lineBatch1: IFileLineReaderServiceResult,
     lineBatch2: IFileLineReaderServiceResult,
-    options: IOptions
+    options: IDiffCheckerServiceOptions
   ): ICompareLineBatchResult {
     const compareResult = compareLines(
       lineBatch1.lines,

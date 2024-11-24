@@ -1,7 +1,7 @@
 import pathUtils from 'path';
-import { minimatch } from 'minimatch';
 import { IEntry } from '../EntryService/index.js';
 import { IExtraOptions } from '../../types.js';
+import { match } from '../../../../utils/match.js';
 
 export class FilterService {
   static defaultFilterHandler = (
@@ -14,25 +14,15 @@ export class FilterService {
     if (
       entry.stat.isFile() &&
       options.includeFilter &&
-      !this.#match(path, options.includeFilter)
+      !match(path, options.includeFilter)
     ) {
       return false;
     }
 
-    if (options.excludeFilter && this.#match(path, options.excludeFilter)) {
+    if (options.excludeFilter && match(path, options.excludeFilter)) {
       return false;
     }
 
     return true;
   };
-
-  static #match(path: string, patterns: string[]): boolean {
-    for (let i = 0; i < patterns.length; i++) {
-      const pat = patterns[i];
-      if (minimatch(path, pat, { dot: true, matchBase: true })) {
-        return true;
-      }
-    }
-    return false;
-  }
 }

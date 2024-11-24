@@ -22,7 +22,7 @@ import {
   CompareInfo,
   IExtraOptions,
   FilterHandler,
-  IOptions,
+  IDiffCheckerServiceOptions,
   IStatisticsResults,
   ResultBuilder,
   CompareMode
@@ -33,7 +33,7 @@ export class DiffCheckerService {
   static async compare(
     path1: string,
     path2: string,
-    options?: IOptions
+    options?: IDiffCheckerServiceOptions
   ): Promise<IStatisticsResults> {
     const realPaths = await Promise.all([realPath(path1), realPath(path2)]);
     const realPath1 = realPaths[0];
@@ -119,10 +119,12 @@ export class DiffCheckerService {
 
   static #prepareOptions(
     compareInfo: CompareInfo,
-    options?: IOptions
+    options?: IDiffCheckerServiceOptions
   ): IExtraOptions {
     options = options || {};
-    const clonedOptions: IOptions = JSON.parse(JSON.stringify(options));
+    const clonedOptions: IDiffCheckerServiceOptions = JSON.parse(
+      JSON.stringify(options)
+    );
 
     clonedOptions.resultBuilder = options.resultBuilder;
     clonedOptions.compareFileSync = options.compareFileSync;
@@ -164,7 +166,7 @@ export class DiffCheckerService {
     state: DifferenceState,
     level: number,
     relativePath: string,
-    options: IOptions,
+    options: IDiffCheckerServiceOptions,
     statistics: IStatistics,
     diffSet: DiffSet,
     diffReason: DiffReason,

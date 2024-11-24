@@ -17,7 +17,7 @@ export type RealPathOptions =
   | { encoding?: BufferEncoding | null }
   | BufferEncoding;
 
-export interface IOptions {
+export interface IDiffCheckerServiceOptions {
   [key: string]: any;
 
   /**
@@ -120,7 +120,7 @@ export interface IOptions {
   filterHandler?: FilterHandler;
 }
 
-export interface IExtraOptions extends IOptions {
+export interface IExtraOptions extends IDiffCheckerServiceOptions {
   dateTolerance: number;
   resultBuilder: ResultBuilder;
   compareFileSync: CompareFileSync;
@@ -155,7 +155,7 @@ export type ResultBuilder = (
   state: DifferenceState,
   level: number,
   relativePath: string,
-  options: IOptions,
+  options: IDiffCheckerServiceOptions,
   statistics: IInitialStatistics,
   diffSet: DiffSet | undefined,
   diffReason: DiffReason | undefined,
@@ -167,7 +167,7 @@ export type CompareFileSync = (
   stat1: fs.Stats,
   path2: string,
   stat2: fs.Stats,
-  options: IOptions
+  options: IDiffCheckerServiceOptions
 ) => boolean;
 
 export type CompareFileAsync = (
@@ -175,17 +175,17 @@ export type CompareFileAsync = (
   stat1: fs.Stats,
   path2: string,
   stat2: fs.Stats,
-  options: IOptions
+  options: IDiffCheckerServiceOptions
 ) => Promise<boolean>;
 
 export type CompareNameHandler = (
   name1: string,
   name2: string,
-  options: IOptions
+  options: IDiffCheckerServiceOptions
 ) => 0 | 1 | -1;
 
 export type FilterHandler = (
   entry: IEntry,
   relativePath: string,
-  options: IOptions
+  options: IDiffCheckerServiceOptions
 ) => boolean;

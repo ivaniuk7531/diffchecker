@@ -12,6 +12,15 @@ export default [
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-expressions': 'warn'
-    }
+    },
+    ignores: [
+      'node_modules/',
+      'dist/',
+      'build/',
+      'coverage/',
+      '*.log',
+      'tmp/',
+      '*.min.js'
+    ]
   }
 ];

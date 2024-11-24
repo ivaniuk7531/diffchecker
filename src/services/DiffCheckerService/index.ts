@@ -1,6 +1,6 @@
 import { DiffCheckerService } from './service.js';
 import {
-  IOptions,
+  IDiffCheckerServiceOptions,
   IExtraOptions,
   CompareInfo,
   ResultBuilder,
@@ -13,9 +13,11 @@ import {
   CompareMode
 } from './types.js';
 
+import { DiffReason } from './services/EntryService/index.js';
+
 export {
   DiffCheckerService,
-  type IOptions,
+  type IDiffCheckerServiceOptions,
   type IExtraOptions,
   type CompareInfo,
   type ResultBuilder,
@@ -25,5 +27,6 @@ export {
   type CompareNameHandler,
   type FilterHandler,
   type RealPathOptions,
-  CompareMode
+  CompareMode,
+  DiffReason
 };

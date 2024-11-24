@@ -14,7 +14,9 @@
     "strictNullChecks": true,
     "declaration": true,
     "composite": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
+
   },
   "ts-node": {
     "esm": true

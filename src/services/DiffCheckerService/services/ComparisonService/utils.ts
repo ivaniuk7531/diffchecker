@@ -4,12 +4,12 @@ import {
   TRIM_LINE_ENDING_REGEXP,
   TRIM_WHITE_SPACES_REGEXP
 } from './constants.js';
-import { IOptions } from '../../types.js';
+import { IDiffCheckerServiceOptions } from '../../types.js';
 
 export function compareLines(
   lines1: string[],
   lines2: string[],
-  options: IOptions
+  options: IDiffCheckerServiceOptions
 ): ICompareLinesResult {
   if (options.ignoreEmptyLines) {
     lines1 = removeEmptyLines(lines1);
@@ -30,7 +30,11 @@ export function compareLines(
   };
 }
 
-function compareLine(options: IOptions, line1: string, line2: string): boolean {
+function compareLine(
+  options: IDiffCheckerServiceOptions,
+  line1: string,
+  line2: string
+): boolean {
   if (options.ignoreLineEnding) {
     line1 = trimLineEnding(line1);
     line2 = trimLineEnding(line2);
