@@ -1,13 +1,42 @@
-import fs, { MakeDirectoryOptions, Mode } from 'fs';
+import fs, {
+  Dirent,
+  MakeDirectoryOptions,
+  Mode,
+  ObjectEncodingOptions,
+  Stats
+} from 'fs';
 import { PathLike, RmOptions } from 'node:fs';
 import { minimatch } from 'minimatch';
 import { FileDescriptorQueueService } from '../QueueService/services/FileDescriptorQueueService/index.js';
 import { BytesRead, FileServiceReadLinesResult } from './types.js';
 import { LINE_TOKENIZER_REGEXP } from './constants.js';
+import path from 'node:path';
 
 export class FileService {
   static existsSync(path: PathLike): boolean {
     return fs.existsSync(path);
+  }
+
+  static statSync(path: PathLike): Stats {
+    return fs.statSync(path);
+  }
+
+  static readdirSync(
+    path: PathLike,
+    options?:
+      | {
+          encoding: BufferEncoding | null;
+          withFileTypes?: false | undefined;
+          recursive?: boolean | undefined;
+        }
+      | BufferEncoding
+      | null
+  ): string[] {
+    return fs.readdirSync(path, options);
+  }
+
+  static join(...paths: string[]): string {
+    return path.join(...paths);
   }
 
   static mkdirSync(

@@ -1,4 +1,4 @@
-export interface IFTPServiceOptions {
+export interface ISFTPServiceOptions {
   /**
    * File name filter. Comma separated minimatch patterns.
    */

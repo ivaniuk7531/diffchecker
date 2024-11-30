@@ -1,4 +1,4 @@
-import { IFTPServiceOptions } from '../services/FTPService/index.js';
+import { ISFTPServiceOptions } from '../services/SFTPService/index.js';
 import { IDiffCheckerServiceOptions } from '../services/DiffCheckerService/index.js';
 import { EXCLUDE_FILTER, INCLUDE_FILTER } from './env.js';
 
@@ -15,7 +15,7 @@ const defaultExcludeFilter = [
   'docs'
 ];
 
-export const FTP_SERVICE_DEFAULT_OPTIONS: IFTPServiceOptions = {
+export const FTP_SERVICE_DEFAULT_OPTIONS: ISFTPServiceOptions = {
   excludeFilter: EXCLUDE_FILTER || defaultExcludeFilter?.join(','),
   includeFilter: INCLUDE_FILTER
 };

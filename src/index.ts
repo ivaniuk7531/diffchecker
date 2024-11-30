@@ -1,5 +1,5 @@
 import { DiffCheckerService } from './services/DiffCheckerService/service.js';
-import { FTPService } from './services/FTPService/index.js';
+import { SFTPService } from './services/SFTPService/service.js';
 import { GitHubService } from './services/GitHubService/index.js';
 import { FileService } from './services/FileService/index.js';
 import {
@@ -8,28 +8,21 @@ import {
   REMOTE_CLONED_REPOSITORIES_DIR
 } from './constants/defaultPaths.js';
 import {
-  FTP_HOST,
-  FTP_PASSWORD,
-  FTP_SECURE,
-  FTP_USER,
-  FTP_VERBOSE,
+  SFTP_HOST,
+  SFTP_PASSWORD,
+  SFTP_USER,
+  SFTP_PORT,
   GITHUB_TAG_NAME,
   GITHUB_URL,
   REMOTE_ENTRY_POINT
 } from './constants/env.js';
-import {
-  DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS,
-  FTP_SERVICE_DEFAULT_OPTIONS
-} from './constants/defaultOptions.js';
 
 async function init() {
-  const ftpService = new FTPService(
-    FTP_HOST,
-    FTP_USER,
-    FTP_PASSWORD,
-    FTP_SECURE,
-    FTP_VERBOSE,
-    FTP_SERVICE_DEFAULT_OPTIONS
+  const sftpService = new SFTPService(
+    SFTP_HOST,
+    SFTP_USER,
+    SFTP_PASSWORD,
+    SFTP_PORT
   );
 
   try {
@@ -64,7 +57,7 @@ async function init() {
 
     const gitHubService = new GitHubService();
 
-    await ftpService.connect();
+    await sftpService.connect();
 
     await Promise.all([
       gitHubService.cloneRepoByTag(
@@ -72,11 +65,12 @@ async function init() {
         cloneDestinationPath,
         GITHUB_TAG_NAME
       ),
-      ftpService.downloadDirectoryRecursively(
+      sftpService.fastDownloadDirectoryRecursively(
         downloadsDestinationPath,
         REMOTE_ENTRY_POINT
       )
     ]);
+    console.log('here');
     //
     // const response = await DiffCheckerService.compare(
     //   'diffCheckerOutput/downloads/ojs/3_4_0-7',
@@ -93,7 +87,7 @@ async function init() {
       console.error('An error occurred during initialization:', err.message);
     }
   } finally {
-    ftpService.closeConnection();
+    await sftpService.closeConnection();
   }
 }
 
