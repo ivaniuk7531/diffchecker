@@ -16,7 +16,6 @@ import {
 import { ROOT_PATH } from './constants.js';
 import { SymlinkService } from './services/SymlinkService/index.js';
 import { ComparisonService } from './services/ComparisonService/index.js';
-import { FilterService } from './services/FilterService/service.js';
 import { realPath } from './utils.js';
 import {
   CompareInfo,
@@ -28,6 +27,7 @@ import {
   CompareMode
 } from './types.js';
 import { PermissionDeniedState } from './services/PermissionService/index.js';
+import { FilterService } from './services/FilterService/index.js';
 
 export class DiffCheckerService {
   static async compare(

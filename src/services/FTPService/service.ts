@@ -2,7 +2,7 @@ import { Client } from 'basic-ftp';
 import fs from 'fs';
 import path from 'node:path';
 import { IFTPServiceOptions } from './type.js';
-import { match } from '../../utils/match.js';
+import { FileService } from '../FileService/index.js';
 
 export class FTPService {
   private client: Client;
@@ -112,14 +112,14 @@ export class FTPService {
     if (
       isFile &&
       this?.options?.includeFilter &&
-      !match(path, this?.options?.includeFilter)
+      !FileService.match(path, this?.options?.includeFilter)
     ) {
       return false;
     }
 
     if (
       this?.options?.excludeFilter &&
-      match(path, this?.options?.excludeFilter)
+      FileService.match(path, this?.options?.excludeFilter)
     ) {
       return false;
     }

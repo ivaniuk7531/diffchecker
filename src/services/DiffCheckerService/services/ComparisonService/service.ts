@@ -3,14 +3,13 @@ import { ComparisonServiceContext } from './context.js';
 import { ICompareLineBatchResult, NameCompareResult } from './types.js';
 import { compareLines, emptyRestLines, strcmp } from './utils.js';
 import { BufferPoolService } from '../BufferPoolService/index.js';
-import { FileDescriptorQueueService } from '../FileDescriptorQueueService/index.js';
+import { FileDescriptorQueueService } from '../../../QueueService/services/FileDescriptorQueueService/index.js';
 import { BUF_SIZE, MAX_CONCURRENT_FILE_COMPARE } from './constants.js';
-import { FileService } from '../FileService/index.js';
-import {
-  FileLineReaderService,
-  IFileLineReaderServiceResult
-} from './services/FileLineReaderService/index.js';
 import { IDiffCheckerServiceOptions } from '../../types.js';
+import {
+  FileService,
+  FileServiceReadLinesResult
+} from '../../../FileService/index.js';
 
 const fdQueue = new FileDescriptorQueueService(MAX_CONCURRENT_FILE_COMPARE * 2);
 const bufferPool = new BufferPoolService(BUF_SIZE, MAX_CONCURRENT_FILE_COMPARE); // fdQueue guarantees there will be no more than MAX_CONCURRENT_FILE_COMPARE async processes accessing the buffers concurrently
@@ -42,7 +41,7 @@ export class ComparisonService {
       );
 
       while (true) {
-        const lineBatch1 = await FileLineReaderService.readLineBatchAsync(
+        const lineBatch1 = await FileService.readLineBatchAsync(
           context.fd1,
           context.buffer.buf1,
           bufferSize,
@@ -50,7 +49,7 @@ export class ComparisonService {
           context.restLines.restLines1
         );
 
-        const lineBatch2 = await FileLineReaderService.readLineBatchAsync(
+        const lineBatch2 = await FileService.readLineBatchAsync(
           context.fd2,
           context.buffer.buf2,
           bufferSize,
@@ -85,8 +84,8 @@ export class ComparisonService {
   }
 
   static compareLineBatches(
-    lineBatch1: IFileLineReaderServiceResult,
-    lineBatch2: IFileLineReaderServiceResult,
+    lineBatch1: FileServiceReadLinesResult,
+    lineBatch2: FileServiceReadLinesResult,
     options: IDiffCheckerServiceOptions
   ): ICompareLineBatchResult {
     const compareResult = compareLines(

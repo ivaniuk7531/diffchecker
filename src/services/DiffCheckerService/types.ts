@@ -90,14 +90,14 @@ export interface IDiffCheckerServiceOptions {
   noDiffSet?: boolean;
 
   /**
-   * File name filter. Array with minimatch patterns.
+   * File name filter. Comma separated minimatch patterns.
    */
-  includeFilter?: string[];
+  includeFilter?: string;
 
   /**
-   * File/directory name exclude filter. Array with minimatch patterns.
+   * File/directory name exclude filter. Comma separated minimatch patterns.
    */
-  excludeFilter?: string[];
+  excludeFilter?: string;
 
   /**
    * Handle permission denied errors. Defaults to 'false'.

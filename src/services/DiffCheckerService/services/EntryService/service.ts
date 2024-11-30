@@ -22,7 +22,6 @@ import {
   OptionalEntry,
   DiffReason
 } from './types.js';
-import { FileSystemService } from '../FileSystemService/index.js';
 import { SymlinkCache, SymlinkService } from '../SymlinkService/index.js';
 import {
   PermissionDeniedState,
@@ -37,6 +36,7 @@ import { PATH_SEP } from './constants.js';
 import fs from 'fs';
 import { CONCURRENCY } from '../ComparisonService/constants.js';
 import { CompareInfo, CompareMode, IExtraOptions } from '../../types.js';
+import { FileService } from '../../../FileService/index.js';
 
 export class EntryService {
   static async buildEntry(
@@ -496,7 +496,7 @@ export class EntryService {
       if (rootEntry.isPermissionDenied) {
         return Promise.resolve([]);
       }
-      const entries = await FileSystemService.readdir(rootEntry.absolutePath);
+      const entries = await FileService.readdir(rootEntry.absolutePath);
       return this.#buildDirEntries(
         rootEntry,
         entries,

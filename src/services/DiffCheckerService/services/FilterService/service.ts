@@ -1,7 +1,7 @@
 import pathUtils from 'path';
 import { IEntry } from '../EntryService/index.js';
 import { IExtraOptions } from '../../types.js';
-import { match } from '../../../../utils/match.js';
+import { FileService } from '../../../FileService/index.js';
 
 export class FilterService {
   static defaultFilterHandler = (
@@ -14,12 +14,15 @@ export class FilterService {
     if (
       entry.stat.isFile() &&
       options.includeFilter &&
-      !match(path, options.includeFilter)
+      !FileService.match(path, options.includeFilter)
     ) {
       return false;
     }
 
-    if (options.excludeFilter && match(path, options.excludeFilter)) {
+    if (
+      options.excludeFilter &&
+      FileService.match(path, options.excludeFilter)
+    ) {
       return false;
     }
 
