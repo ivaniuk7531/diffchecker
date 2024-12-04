@@ -1,13 +1,14 @@
-import { SimpleGit, simpleGit } from 'simple-git';
+import { SimpleGit, simpleGit, SimpleGitOptions } from 'simple-git';
 import fs from 'fs';
+import { GITHUB_SERVICE_DEFAULT_OPTIONS } from './constants.js';
 
 export class GitHubService {
   private readonly git: SimpleGit;
   private readonly remoteRepo: string;
   private readonly tag: string;
 
-  constructor(remoteRepo: string, tag: string) {
-    this.git = simpleGit();
+  constructor(remoteRepo: string, tag: string, options?: SimpleGitOptions) {
+    this.git = simpleGit(options ?? GITHUB_SERVICE_DEFAULT_OPTIONS);
     this.remoteRepo = remoteRepo;
     this.tag = tag;
     this.init();
@@ -27,18 +28,20 @@ export class GitHubService {
 
   async cloneRepoByTag(path: string) {
     try {
-      if (fs.existsSync(path)) {
-        fs.rmSync(path, {
-          recursive: true,
-          force: true
-        });
-        fs.mkdirSync(path, { recursive: true });
-      }
+      console.log(
+        `Starting to clone the repository from ${this.remoteRepo} into ${path}...`
+      );
+
       await this.git.clone(this.remoteRepo, path, [
+        '--recurse',
         '--branch',
         this.tag,
         '--single-branch'
       ]);
+
+      console.log(
+        `Repository cloned successfully into ${path} from branch/tag "${this.tag}".`
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Error cloning repository:', error.message);

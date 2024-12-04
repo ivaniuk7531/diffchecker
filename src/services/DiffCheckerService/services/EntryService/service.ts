@@ -56,7 +56,7 @@ export class EntryService {
       isPermissionDenied = hasPermissionDenied(absolutePath, isFile, options);
     }
 
-    if (isFile) {
+    if (isFile && !isPermissionDenied && options.compareFileHash) {
       fileHash = await createHashFromFile(absolutePath);
     }
 

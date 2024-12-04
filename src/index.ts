@@ -15,11 +15,9 @@ import {
   SFTP_PORT,
   SFTP_USER
 } from './constants/env.js';
-import {
-  DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS,
-  SFTP_SERVICE_DEFAULT_OPTIONS
-} from './constants/defaultOptions.js';
+import { SFTP_SERVICE_DEFAULT_OPTIONS } from './services/SFTPService/index.js';
 import fs from 'fs';
+import { DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS } from './services/DiffCheckerService/constants.js';
 
 async function init() {
   const sftpService = new SFTPService(
@@ -45,6 +43,11 @@ async function init() {
       recursive: true,
       force: true
     });
+    fs.rmSync(cloneDestinationPath, {
+      recursive: true,
+      force: true
+    });
+    fs.mkdirSync(cloneDestinationPath, { recursive: true });
 
     await Promise.all([
       gitHubService.cloneRepoByTag(cloneDestinationPath),
