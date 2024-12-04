@@ -1,7 +1,13 @@
 import SFTPClient from 'ssh2-sftp-client';
 import { ISFTPServiceOptions } from './type.js';
 import { FileService } from '../FileService/index.js';
-import { SFTP_DEBUG } from '../../constants/env.js';
+import { REMOTE_ENTRY_POINT, SFTP_DEBUG } from '../../constants/env.js';
+import { DiffReason, IStatisticsResults } from '../DiffCheckerService/index.js';
+import { DifferenceType } from '../DiffCheckerService/services/EntryService/index.js';
+import pLimit from 'p-limit';
+import { DOWNLOAD_CONCURRENCY, UPLOAD_CONCURRENCY } from './constants.js';
+import fs from 'fs';
+import path from 'node:path';
 
 export class SFTPService {
   private client: SFTPClient;
@@ -49,65 +55,106 @@ export class SFTPService {
     await this.client.end();
   }
 
-  async fastDownloadDirectoryRecursively(localDir: string, remoteDir: string) {
+  async downloadFiles(localDir: string, remoteDir: string) {
     try {
-      const files = await this.client.list(remoteDir);
+      const stack: { local: string; remote: string }[] = [
+        { local: localDir, remote: remoteDir }
+      ];
 
-      for (const file of files) {
-        const { name, type } = file;
+      const limit = pLimit(DOWNLOAD_CONCURRENCY);
 
-        const isFile = type === '-';
-        const isDirectory = type === 'd';
+      while (stack.length > 0) {
+        const { local, remote } = stack.pop()!;
 
-        const remoteFilePath = FileService.join(remoteDir, name);
-        const localFilePath = FileService.join(localDir, name);
-        const isValid = this.#filter(isFile, remoteFilePath);
+        const files = await this.client.list(remote);
 
-        if (!isValid) {
-          continue;
+        if (!fs.existsSync(local)) {
+          fs.mkdirSync(local, { recursive: true });
         }
 
-        if (!FileService.existsSync(localDir)) {
-          FileService.mkdirSync(localDir, { recursive: true });
+        const downloadTasks: Promise<void>[] = [];
+
+        for (const file of files) {
+          const { name, type } = file;
+
+          const remoteFilePath = path.join(remote, name);
+          const localFilePath = path.join(local, name);
+
+          const isFile = type === '-';
+          const isDirectory = type === 'd';
+          const isValid = this.#filter(isFile, remoteFilePath);
+
+          if (!isValid) {
+            continue;
+          }
+
+          if (isDirectory) {
+            stack.push({ local: localFilePath, remote: remoteFilePath });
+          }
+          console.log('Downloading file:', remoteFilePath);
+
+          if (isFile) {
+            downloadTasks.push(
+              limit(async () => {
+                await this.client.get(remoteFilePath, localFilePath);
+              })
+            );
+          }
         }
 
-        if (isDirectory) {
-          await this.fastDownloadDirectoryRecursively(
-            localFilePath,
-            remoteFilePath
-          );
-        }
-
-        if (isFile) {
-          await this.client.fastGet(remoteFilePath, localFilePath);
-        }
+        await Promise.all(downloadTasks);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Error processing ${remoteDir}:`, error.message);
+        console.error(`Error processing directories:`, error.message);
       }
     }
   }
 
-  async fastUploadDirectoryRecursively(localDir: string, remoteDir: string) {
+  async uploadFiles(data: IStatisticsResults) {
     try {
-      const dirContent = FileService.readdirSync(localDir);
+      if (!data?.diffSet || data?.diffSet.length === 0) {
+        return;
+      }
+      const uploadLimit = pLimit(UPLOAD_CONCURRENCY);
 
-      // await this.client.ensureDir(remoteDir);
+      const uploadTasks: Promise<void>[] = [];
 
-      for (const content of dirContent) {
-        const fullPath = FileService.join(localDir, content);
-        const stats = FileService.statSync(fullPath);
+      for (const diff of data.diffSet) {
+        const isMissingOnServer =
+          diff.type1 === DifferenceType.MISSING &&
+          diff.type2 === DifferenceType.FILE;
+        const isDifferentContent =
+          diff.diffReason === DiffReason.DIFFERENT_CONTENT;
 
-        if (stats.isDirectory()) {
-          await this.fastUploadDirectoryRecursively(fullPath, content);
-        } else if (stats.isFile()) {
-          await this.client.fastPut(fullPath, content);
+        if (isDifferentContent || isMissingOnServer) {
+          const localFilePath = path.normalize(`${diff.path2}/${diff.name2}`);
+          const remoteDirPath = path.normalize(
+            `${REMOTE_ENTRY_POINT}${diff.relativePath}`
+          );
+          const remoteFilePath = path.normalize(
+            `${remoteDirPath}/${diff.name2}`
+          );
+
+          const isDirExists = await this.client.exists(remoteDirPath);
+
+          if (!isDirExists) {
+            await this.client.mkdir(remoteDirPath, true);
+          }
+          console.log('Uploading file:', remoteFilePath);
+
+          uploadTasks.push(
+            uploadLimit(async () => {
+              await this.client.put(localFilePath, remoteFilePath);
+            })
+          );
         }
       }
+
+      await Promise.all(uploadTasks);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error(`Error uploading directory: ${err.message}`);
+        console.error(`Error upload files: ${err.message}`);
       }
     }
   }

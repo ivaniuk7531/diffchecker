@@ -31,9 +31,8 @@ import {
   IInitialStatistics,
   StatisticsService
 } from '../StatisticsService/index.js';
-
-import { PATH_SEP } from './constants.js';
 import fs from 'fs';
+import { PATH_SEP } from './constants.js';
 import { CONCURRENCY } from '../ComparisonService/constants.js';
 import { CompareInfo, CompareMode, IExtraOptions } from '../../types.js';
 import { FileService } from '../../../FileService/index.js';
@@ -414,10 +413,13 @@ export class EntryService {
         i2++;
       }
     }
+
     await Promise.all(comparePromises);
+
     const fileEqualityAsyncResults = await Promise.all(
       fileEqualityAsyncPromises
     );
+
     for (let i = 0; i < fileEqualityAsyncResults.length; i++) {
       const fileEqualityAsync = fileEqualityAsyncResults[i];
       if (fileEqualityAsync.hasErrors) {

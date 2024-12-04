@@ -1,4 +1,3 @@
-import fs from 'fs';
 import {
   IInitialStatistics,
   IStatistics
@@ -12,6 +11,7 @@ import {
   HashAlgorithms
 } from './services/EntryService/index.js';
 import { PermissionDeniedState } from './services/PermissionService/index.js';
+import fs, { Stats } from 'fs';
 
 export type RealPathOptions =
   | { encoding?: BufferEncoding | null }
@@ -172,7 +172,7 @@ export type CompareFileSync = (
 
 export type CompareFileAsync = (
   path1: string,
-  stat1: fs.Stats,
+  stat1: Stats,
   path2: string,
   stat2: fs.Stats,
   options: IDiffCheckerServiceOptions

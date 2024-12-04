@@ -1,5 +1,5 @@
 import fs, { NoParamCallback } from 'fs';
-import { QueueService } from '../../index.js';
+import { QueueService } from '../../QueueService/index.js';
 import { Job, OpenFileCallback, OpenFileFlags } from './types.js';
 
 export class FileDescriptorQueueService {

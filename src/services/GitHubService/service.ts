@@ -1,23 +1,42 @@
 import { SimpleGit, simpleGit } from 'simple-git';
+import fs from 'fs';
 
 export class GitHubService {
-  private git: SimpleGit;
+  private readonly git: SimpleGit;
+  private readonly remoteRepo: string;
+  private readonly tag: string;
 
-  constructor() {
+  constructor(remoteRepo: string, tag: string) {
     this.git = simpleGit();
+    this.remoteRepo = remoteRepo;
+    this.tag = tag;
+    this.init();
   }
 
-  async cloneRepoByTag(repoUrl: string, localPath: string, tag: string) {
+  private init() {
     try {
-      if (!repoUrl || !localPath || !tag) {
-        throw new Error(
-          'Invalid input parameters. Please provide a valid repository URL, local path, and tag.'
-        );
+      if (!this.remoteRepo) {
+        throw new Error('Remote repository not found');
       }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Init gitHubService error:', error);
+      }
+    }
+  }
 
-      await this.git.clone(repoUrl, `${localPath}/${tag}`, [
+  async cloneRepoByTag(path: string) {
+    try {
+      if (fs.existsSync(path)) {
+        fs.rmSync(path, {
+          recursive: true,
+          force: true
+        });
+        fs.mkdirSync(path, { recursive: true });
+      }
+      await this.git.clone(this.remoteRepo, path, [
         '--branch',
-        tag,
+        this.tag,
         '--single-branch'
       ]);
     } catch (error: unknown) {
@@ -27,9 +46,9 @@ export class GitHubService {
     }
   }
 
-  static getRepoName(repoUrl: string): string | undefined {
+  getRepoName(): string | undefined {
     try {
-      const urlParts = repoUrl.split('/');
+      const urlParts = this.remoteRepo.split('/');
       const repoNameWithGit = urlParts[urlParts.length - 1];
       return repoNameWithGit.replace('.git', '');
     } catch (error: unknown) {

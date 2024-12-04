@@ -11,7 +11,10 @@ declare namespace NodeJS {
     GITHUB_URL: string;
     GITHUB_TAG_NAME: string;
 
-    INCLUDE_FILTER: string;
-    EXCLUDE_FILTER: string;
+    SFTP_INCLUDE_FILTER: string;
+    SFTP_EXCLUDE_FILTER: string;
+
+    DIFF_CHECKER_INCLUDE_FILTER: string;
+    DIFF_CHECKER_EXCLUDE_FILTER: string;
   }
 }

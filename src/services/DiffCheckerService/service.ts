@@ -16,7 +16,6 @@ import {
 import { ROOT_PATH } from './constants.js';
 import { SymlinkService } from './services/SymlinkService/index.js';
 import { ComparisonService } from './services/ComparisonService/index.js';
-import { realPath } from './utils.js';
 import {
   CompareInfo,
   IExtraOptions,
@@ -28,6 +27,7 @@ import {
 } from './types.js';
 import { PermissionDeniedState } from './services/PermissionService/index.js';
 import { FilterService } from './services/FilterService/index.js';
+import { FileService } from '../FileService/index.js';
 
 export class DiffCheckerService {
   static async compare(
@@ -35,7 +35,10 @@ export class DiffCheckerService {
     path2: string,
     options?: IDiffCheckerServiceOptions
   ): Promise<IStatisticsResults> {
-    const realPaths = await Promise.all([realPath(path1), realPath(path2)]);
+    const realPaths = await Promise.all([
+      FileService.realPath(path1),
+      FileService.realPath(path2)
+    ]);
     const realPath1 = realPaths[0];
     const realPath2 = realPaths[1];
     const absolutePath1 = pathUtils.normalize(pathUtils.resolve(realPath1));
@@ -47,6 +50,7 @@ export class DiffCheckerService {
     const extOptions = this.#prepareOptions(compareInfo, options);
 
     const asyncDiffSet: AsyncDiffSet = [];
+
     const statisticsService = new StatisticsService(extOptions);
     const initialStatistics = statisticsService.getInitialStatistics();
 

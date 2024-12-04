@@ -1,60 +1,11 @@
-import fs, {
-  Dirent,
-  MakeDirectoryOptions,
-  Mode,
-  ObjectEncodingOptions,
-  Stats
-} from 'fs';
-import { PathLike, RmOptions } from 'node:fs';
+import fs from 'fs';
 import { minimatch } from 'minimatch';
-import { FileDescriptorQueueService } from '../QueueService/services/FileDescriptorQueueService/index.js';
+import { FileDescriptorQueueService } from './FileDescriptorQueueService/index.js';
 import { BytesRead, FileServiceReadLinesResult } from './types.js';
 import { LINE_TOKENIZER_REGEXP } from './constants.js';
-import path from 'node:path';
+import { RealPathOptions } from '../DiffCheckerService/index.js';
 
 export class FileService {
-  static existsSync(path: PathLike): boolean {
-    return fs.existsSync(path);
-  }
-
-  static statSync(path: PathLike): Stats {
-    return fs.statSync(path);
-  }
-
-  static readdirSync(
-    path: PathLike,
-    options?:
-      | {
-          encoding: BufferEncoding | null;
-          withFileTypes?: false | undefined;
-          recursive?: boolean | undefined;
-        }
-      | BufferEncoding
-      | null
-  ): string[] {
-    return fs.readdirSync(path, options);
-  }
-
-  static join(...paths: string[]): string {
-    return path.join(...paths);
-  }
-
-  static mkdirSync(
-    path: PathLike,
-    options?:
-      | Mode
-      | (MakeDirectoryOptions & {
-          recursive?: boolean | undefined;
-        })
-      | null
-  ): void {
-    fs.mkdirSync(path, options);
-  }
-
-  static rmSync(path: PathLike, options?: RmOptions): void {
-    fs.rmSync(path, options);
-  }
-
   static match = (path: string, pattern: string): boolean => {
     const patternArray = pattern.split(',');
     for (let i = 0; i < patternArray.length; i++) {
@@ -165,5 +116,20 @@ export class FileService {
       rest: lastLine,
       reachedEof: false
     };
+  }
+
+  static async realPath(
+    path: string,
+    options?: RealPathOptions
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fs.realpath(path, options, (err, resolvedPath) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(resolvedPath);
+        }
+      });
+    });
   }
 }
