@@ -16,5 +16,7 @@ declare namespace NodeJS {
 
     DIFF_CHECKER_INCLUDE_FILTER: string;
     DIFF_CHECKER_EXCLUDE_FILTER: string;
+
+    JOB_TIME: string;
   }
 }

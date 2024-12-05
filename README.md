@@ -74,6 +74,29 @@ This project requires several environment variables to be set for proper functio
 - **DIFF_CHECKER_INCLUDE_FILTER**: File name filter. Comma separated minimatch patterns (e.g., `"*.js"`).
 - **DIFF_CHECKER_EXCLUDE_FILTER**: File/directory name exclude filter. Comma separated minimatch patterns (e.g., `"*.log,*css,*tsx"`).
 
----
+### Crone
 
-Please make sure to define these environment variables in your `.env` file for the application to function correctly.
+- **JOB_TIME**: Environment variable defines the schedule for the cron job in the cron format:
+
+```
+* * * * * *
+| | | | | |
+| | | | | +-- Day of the week (0 - 6) (Sunday = 0)
+| | | | +---- Month (1 - 12)
+| | | +------ Day of the month (1 - 31)
+| | +-------- Hour (0 - 23)
+| +---------- Minute (0 - 59)
++------------ Second (0 - 59)
+```
+
+
+### Example Values:
+- `"*/5 * * * * *"`: Executes the job every 5 seconds.
+- `"0 * * * * *"`: Executes the job at the start of every minute.
+- `"0 0 * * * *"`: Executes the job at midnight every day.
+- `"0 12 * * 1"`: Executes the job at 12:00 PM every Monday.
+
+### Default Value:
+- `"*/30 * * * *"`: Executes the job every 30 seconds.
+
+---
