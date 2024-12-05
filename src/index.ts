@@ -1,6 +1,9 @@
 import { DiffCheckerService } from './services/DiffCheckerService/service.js';
 import { SFTPService } from './services/SFTPService/service.js';
 import { GitHubService } from './services/GitHubService/index.js';
+import { CronService } from './services/CroneService/index.js';
+import fs from 'fs';
+
 import {
   DOWNLOADS_DIR,
   OUTPUT_DIR,
@@ -9,6 +12,7 @@ import {
 import {
   GITHUB_TAG_NAME,
   GITHUB_URL,
+  JOB_TIME,
   REMOTE_ENTRY_POINT,
   SFTP_HOST,
   SFTP_PASSWORD,
@@ -16,8 +20,9 @@ import {
   SFTP_USER
 } from './constants/env.js';
 import { SFTP_SERVICE_DEFAULT_OPTIONS } from './services/SFTPService/index.js';
-import fs from 'fs';
 import { DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS } from './services/DiffCheckerService/constants.js';
+
+const cronService = new CronService();
 
 async function init() {
   const sftpService = new SFTPService(
@@ -76,4 +81,4 @@ async function init() {
   }
 }
 
-await init();
+cronService.createJob(JOB_TIME, init, true, true);
