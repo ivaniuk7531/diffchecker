@@ -1,11 +1,10 @@
 import { CronJob } from 'cron';
-import { DEFAULT_JOB_TIME } from './constants.js';
 
 export class CronService {
   private isRunning: boolean = false;
 
   createJob(
-    cronTime = DEFAULT_JOB_TIME,
+    cronTime: string,
     job: () => Promise<void> | void,
     start: boolean = false,
     runOnInit: boolean = true,

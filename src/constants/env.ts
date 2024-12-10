@@ -21,4 +21,4 @@ export const DIFF_CHECKER_EXCLUDE_FILTER =
 export const SFTP_INCLUDE_FILTER = process.env.SFTP_INCLUDE_FILTER;
 export const SFTP_EXCLUDE_FILTER = process.env.SFTP_EXCLUDE_FILTER;
 
-export const JOB_TIME = process.env.JOB_TIME;
+export const JOB_TIME = process.env.JOB_TIME || '*/30 * * * *';
