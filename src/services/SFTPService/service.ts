@@ -1,5 +1,5 @@
 import SFTPClient from 'ssh2-sftp-client';
-import { ISFTPServiceOptions } from './type.js';
+import { ISFTPServiceOptions } from './types.js';
 import { FileService } from '../FileService/index.js';
 import {
   GITHUB_TAG_NAME,

@@ -2,7 +2,7 @@ import {
   SFTP_EXCLUDE_FILTER,
   SFTP_INCLUDE_FILTER
 } from '../../constants/env.js';
-import { ISFTPServiceOptions } from './type.js';
+import { ISFTPServiceOptions } from './types.js';
 import { DEFAULT_EXCLUDE_FILTER } from '../../constants/defaultExcludeFilter.js';
 
 export const DOWNLOAD_CONCURRENCY = 9;

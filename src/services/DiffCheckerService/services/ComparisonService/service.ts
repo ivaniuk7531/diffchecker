@@ -3,7 +3,7 @@ import { ComparisonServiceContext } from './context.js';
 import { ICompareLineBatchResult, NameCompareResult } from './types.js';
 import { compareLines, emptyRestLines, strcmp } from './utils.js';
 import { BufferPoolService } from '../BufferPoolService/index.js';
-import { FileDescriptorQueueService } from '../../../FileService/FileDescriptorQueueService/index.js';
+import { FileDescriptorQueueService } from '../../../FileService/services/FileDescriptorQueueService/index.js';
 import { BUF_SIZE, MAX_CONCURRENT_FILE_COMPARE } from './constants.js';
 import { IDiffCheckerServiceOptions } from '../../types.js';
 import {

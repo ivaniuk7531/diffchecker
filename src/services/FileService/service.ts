@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { minimatch } from 'minimatch';
-import { FileDescriptorQueueService } from './FileDescriptorQueueService/index.js';
+import { FileDescriptorQueueService } from './services/FileDescriptorQueueService/index.js';
 import { BytesRead, FileServiceReadLinesResult } from './types.js';
 import { LINE_TOKENIZER_REGEXP } from './constants.js';
 import { RealPathOptions } from '../DiffCheckerService/index.js';
