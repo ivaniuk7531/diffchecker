@@ -15,5 +15,6 @@ export const DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS: IDiffCheckerServiceOptions =
     includeFilter: DIFF_CHECKER_INCLUDE_FILTER,
     handlePermissionDenied: true,
     skipSymlinks: true,
-    skipEmptyDirs: true
+    skipEmptyDirs: true,
+    compareContent: true
   };

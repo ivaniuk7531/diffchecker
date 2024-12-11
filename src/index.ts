@@ -71,10 +71,7 @@ async function init() {
     const compareResult = await DiffCheckerService.compare(
       downloadsDestinationPath,
       cloneDestinationPath,
-      {
-        ...DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS,
-        compareContent: true
-      }
+      DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS
     );
 
     const uploadedFiles = await sftpService.uploadFiles(compareResult);
