@@ -343,6 +343,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # Custom
-.diffCheckerOutput
+diffCheckerOutput
 
 # End of https://www.toptal.com/developers/gitignore/api/node,webstorm+all,visualstudiocode,yarn

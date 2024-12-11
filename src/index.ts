@@ -91,7 +91,7 @@ async function validateEnvVariables() {
     }
 
     await init();
-  } catch (error: unknown) {
+  } catch (error) {
     if (error instanceof Error) {
       console.error('Error:', error.message);
     }
