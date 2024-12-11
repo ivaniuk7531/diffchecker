@@ -69,10 +69,40 @@ This project requires several environment variables to be set for proper functio
 - **SFTP_INCLUDE_FILTER**: File name filter. Comma separated minimatch patterns (e.g., `"*.txt"`).
 - **SFTP_EXCLUDE_FILTER**: File/directory name exclude filter. Comma separated minimatch patterns (e.g., `"*.log,*css,*tsx"`).
 
-### Diff Checker Filters
-
+### Diff Checker
+ Usually one of `compareSize`, `compareContent`, `compareFileHash` or `COMPARE_DATE` options has to be activated.
+ 
+- **COMPARE_SIZE**: Compares files by size.
+  **Default:** `false`
+- **COMPARE_FILE_HASH**: Compares files by file hash.
+  **Default:** `false`
+- **HASH_ALGORITHM**: The hashing algorithms are used to generate a fixed-size hash value from the file.
+  **Default:** `sha1`
+- **COMPARE_CONTENT**: Compares files by content.
+  **Default:** `true`
+- **COMPARE_DATE**: Compares files by date of modification (stat.mtime).
+  **Default:** `false`
+- **DATE_TOLERANCE**: Two files are considered to have the same date if the difference between their modification dates fits within date tolerance.
+  **Default:** `1000`
 - **DIFF_CHECKER_INCLUDE_FILTER**: File name filter. Comma separated minimatch patterns (e.g., `"*.js"`).
 - **DIFF_CHECKER_EXCLUDE_FILTER**: File/directory name exclude filter. Comma separated minimatch patterns (e.g., `"*.log,*css,*tsx"`).
+
+To add the new enum for `HashAlgorithms` to your README, you can include a section describing it along with the default value and possible options. Here's how you can present it:
+
+---
+
+### Available Hashing Algorithms
+
+You can choose from the following hashing algorithms:
+
+```typescript
+export enum HashAlgorithms {
+  md5 = 'md5',
+  sha1 = 'sha1',
+  sha256 = 'sha256',
+  sha512 = 'sha512'
+}
+```
 
 ### Crone
 
@@ -136,6 +166,12 @@ GITHUB_TAG_NAME=v1.0.0
 SFTP_INCLUDE_FILTER=*.php,*.html,*.css
 SFTP_EXCLUDE_FILTER=*.log,*.tmp
 
+COMPARE_SIZE=false
+COMPARE_FILE_HASH=sha1
+HASH_ALGORITHM=false
+COMPARE_CONTENT=true
+COMPARE_DATE=false
+DATE_TOLERANCE=2000
 DIFF_CHECKER_INCLUDE_FILTER=*.php,*.js
 DIFF_CHECKER_EXCLUDE_FILTER=*.log,*.cache
 

@@ -40,7 +40,7 @@ export interface IDiffCheckerServiceOptions {
   hashAlgorithm?: HashAlgorithms;
 
   /**
-   * Compares files by content. Defaults to 'false'.
+   * Compares files by content. Defaults to 'true'.
    *
    * Usually one of `compareSize` or `compareContent` or `compareFileHash` options has to be activated. Otherwise files are compared by name disregarding size or content.
    */

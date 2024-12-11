@@ -1,10 +1,11 @@
 declare namespace NodeJS {
+  type BooleanString = 'true' | 'false';
   interface ProcessEnv {
     SFTP_HOST: string;
     SFTP_USER: string;
     SFTP_PASSWORD: string;
     SFTP_PORT: number;
-    SFTP_DEBUG: 'true' | 'false';
+    SFTP_DEBUG: BooleanString;
 
     REMOTE_ENTRY_POINT: string;
 
@@ -14,6 +15,12 @@ declare namespace NodeJS {
     SFTP_INCLUDE_FILTER: string;
     SFTP_EXCLUDE_FILTER: string;
 
+    COMPARE_SIZE: BooleanString;
+    COMPARE_FILE_HASH: BooleanString;
+    HASH_ALGORITHM: string;
+    COMPARE_CONTENT: BooleanString;
+    COMPARE_DATE: BooleanString;
+    DATE_TOLERANCE: number;
     DIFF_CHECKER_INCLUDE_FILTER: string;
     DIFF_CHECKER_EXCLUDE_FILTER: string;
 

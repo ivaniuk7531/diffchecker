@@ -13,7 +13,7 @@ import {
   CompareMode
 } from './types.js';
 
-import { DiffReason } from './services/EntryService/index.js';
+import { DiffReason, HashAlgorithms } from './services/EntryService/index.js';
 
 export {
   DiffCheckerService,
@@ -27,6 +27,7 @@ export {
   type CompareNameHandler,
   type FilterHandler,
   type RealPathOptions,
+  HashAlgorithms,
   CompareMode,
   DiffReason
 };
