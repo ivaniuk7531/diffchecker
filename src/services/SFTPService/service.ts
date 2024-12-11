@@ -8,6 +8,7 @@ import pLimit from 'p-limit';
 import { DOWNLOAD_CONCURRENCY, UPLOAD_CONCURRENCY } from './constants.js';
 import fs from 'fs';
 import path from 'node:path';
+import { EmailService } from '../EmailService/index.js';
 
 export class SFTPService {
   private client: SFTPClient;
@@ -16,6 +17,7 @@ export class SFTPService {
   private readonly password: string;
   private readonly port: number;
   private readonly options?: ISFTPServiceOptions;
+  private readonly emailService = EmailService.getInstance();
 
   constructor(
     host: string,
@@ -106,19 +108,23 @@ export class SFTPService {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Error processing directories:`, error.message);
+        console.error(`Error downloading:`, error.message);
+        await this.emailService.sendEmail('Error downloading:', error.message);
       }
     }
   }
 
-  async uploadFiles(data: IStatisticsResults) {
+  async uploadFiles(data: IStatisticsResults): Promise<string[] | undefined> {
     try {
       if (!data?.diffSet || data?.diffSet.length === 0) {
         return;
       }
+
       const uploadLimit = pLimit(UPLOAD_CONCURRENCY);
 
       const uploadTasks: Promise<void>[] = [];
+
+      const uploadedFiles: string[] = [];
 
       for (const diff of data.diffSet) {
         const isMissingOnServer =
@@ -146,12 +152,16 @@ export class SFTPService {
           uploadTasks.push(
             uploadLimit(async () => {
               await this.client.put(localFilePath, remoteFilePath);
+
+              uploadedFiles.push(remoteFilePath);
             })
           );
         }
       }
 
       await Promise.all(uploadTasks);
+
+      return uploadedFiles;
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error(`Error upload files: ${err.message}`);

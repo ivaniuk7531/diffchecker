@@ -1,11 +1,13 @@
 import { SimpleGit, simpleGit, SimpleGitOptions } from 'simple-git';
 import fs from 'fs';
 import { GITHUB_SERVICE_DEFAULT_OPTIONS } from './constants.js';
+import { EmailService } from '../EmailService/index.js';
 
 export class GitHubService {
   private readonly git: SimpleGit;
   private readonly remoteRepo: string;
   private readonly tag: string;
+  private readonly emailService = EmailService.getInstance();
 
   constructor(remoteRepo: string, tag: string, options?: SimpleGitOptions) {
     this.git = simpleGit(options ?? GITHUB_SERVICE_DEFAULT_OPTIONS);
@@ -44,7 +46,12 @@ export class GitHubService {
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error('Error cloning repository:', error.message);
+        console.error('Error during cloning repository:', error.message);
+
+        await this.emailService.sendEmail(
+          'Error during cloning repository',
+          error.message
+        );
       }
     }
   }

@@ -22,3 +22,13 @@ export const SFTP_INCLUDE_FILTER = process.env.SFTP_INCLUDE_FILTER;
 export const SFTP_EXCLUDE_FILTER = process.env.SFTP_EXCLUDE_FILTER;
 
 export const JOB_TIME = process.env.JOB_TIME || '*/30 * * * *';
+
+export const SMTP_SERVICE = process.env.SMTP_SERVICE || 'gmail';
+export const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+export const SMTP_PORT = process.env.SMTP_PORT || 587;
+export const SMTP_USER = process.env.SMTP_USER;
+export const SMTP_PASS = process.env.SMTP_PASS;
+export const SMTP_FROM = process.env.SMTP_FROM;
+export const SMTP_FROM_NAME = process.env.SMTP_FROM_NAME;
+export const SMTP_TO = process.env.SMTP_TO;
+export const SMTP_TO_NAME = process.env.SMTP_TO_NAME;

@@ -99,4 +99,44 @@ This project requires several environment variables to be set for proper functio
 ### Default Value:
 - `"*/30 * * * *"`: Executes the job every 30 seconds.
 
+### SMTP Configuration
+
+The following environment variables are used to configure the SMTP service for sending emails. Ensure these variables are set correctly in your environment file or server configuration to enable email functionality.
+
+- **`SMTP_SERVICE` (string)**: Specifies the identifier or name representing the SMTP service provider. By default, this is set to `gmail`.  
+  **Default:** `gmail`
+
+- **`SMTP_HOST` (string)**: Defines the host address of the SMTP server. The default is `smtp.gmail.com`.  
+  **Default:** `smtp.gmail.com`
+
+- **`SMTP_PORT` (number)**: Indicates the port number used to establish a connection with the SMTP server. The default is `587`, commonly used for TLS connections.  
+  **Default:** `587`
+
+- **`SMTP_USER`**: The username or email address used to authenticate with the SMTP server. This is often the email address of the sender.
+
+- **`SMTP_PASS`**: The password or application-specific token used to authenticate the user with the SMTP server.
+
+- **`SMTP_FROM`**: The email address of the sender.
+
+- **`SMTP_FROM_NAME`**: The display name of the sender (optional)
+
+
+### Example `.env` File
+```env
+SMTP_SERVICE=1
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-secure-password
+SMTP_FROM=email address of the sender
+SMTP_FROM_NAME=name of the sender
+SMTP_TO=recipient email address (to)
+SMTP_TO_NAME=recipient's display name (optional)
+```
+
+### Security Note
+
+- **Do not hard-code sensitive information in your source code.** Always use environment variables to keep credentials secure.
+- If your SMTP provider supports app-specific passwords or tokens, prefer using them over your main account password.
+
 ---

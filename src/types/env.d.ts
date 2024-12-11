@@ -1,3 +1,5 @@
+import { SMTP_TO, SMTP_TO_NAME } from '../constants/env.js';
+
 declare namespace NodeJS {
   interface ProcessEnv {
     SFTP_HOST: string;
@@ -18,5 +20,15 @@ declare namespace NodeJS {
     DIFF_CHECKER_EXCLUDE_FILTER: string;
 
     JOB_TIME: string;
+
+    SMTP_SERVICE: string;
+    SMTP_HOST: string;
+    SMTP_PORT: number;
+    SMTP_USER: string;
+    SMTP_PASS: string;
+    SMTP_FROM: string;
+    SMTP_FROM_NAME: string;
+    SMTP_TO: string;
+    SMTP_TO_NAME: string;
   }
 }
