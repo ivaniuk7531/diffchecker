@@ -29,6 +29,4 @@ export const SMTP_PORT = process.env.SMTP_PORT || 587;
 export const SMTP_USER = process.env.SMTP_USER;
 export const SMTP_PASS = process.env.SMTP_PASS;
 export const SMTP_FROM = process.env.SMTP_FROM;
-export const SMTP_FROM_NAME = process.env.SMTP_FROM_NAME;
 export const SMTP_TO = process.env.SMTP_TO;
-export const SMTP_TO_NAME = process.env.SMTP_TO_NAME;

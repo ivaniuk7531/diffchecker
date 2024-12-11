@@ -1,5 +1,3 @@
-import { SMTP_TO, SMTP_TO_NAME } from '../constants/env.js';
-
 declare namespace NodeJS {
   interface ProcessEnv {
     SFTP_HOST: string;
@@ -27,8 +25,6 @@ declare namespace NodeJS {
     SMTP_USER: string;
     SMTP_PASS: string;
     SMTP_FROM: string;
-    SMTP_FROM_NAME: string;
     SMTP_TO: string;
-    SMTP_TO_NAME: string;
   }
 }

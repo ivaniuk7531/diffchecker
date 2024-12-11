@@ -2,13 +2,7 @@ import { DiffCheckerService } from './services/DiffCheckerService/service.js';
 import { SFTPService } from './services/SFTPService/service.js';
 import { GitHubService } from './services/GitHubService/index.js';
 import { CronService } from './services/CroneService/index.js';
-import fs from 'fs';
-
-import {
-  DOWNLOADS_DIR,
-  OUTPUT_DIR,
-  CLONED_REPOSITORIES_DIR
-} from './constants/defaultPaths.js';
+import { DOWNLOADS_DIR, OUTPUT_DIR } from './constants/defaultPaths.js';
 import {
   GITHUB_TAG_NAME,
   GITHUB_URL,
@@ -33,7 +27,6 @@ async function init() {
     SFTP_PORT,
     SFTP_SERVICE_DEFAULT_OPTIONS
   );
-
   const emailService = EmailService.getInstance();
 
   try {
@@ -41,36 +34,20 @@ async function init() {
 
     const gitHubService = new GitHubService(GITHUB_URL, GITHUB_TAG_NAME);
     const gitHubRepoName = gitHubService.getRepoName();
+    const clonePath = gitHubService.getClonePath();
 
-    if (!gitHubRepoName) {
-      throw new Error(
-        `GitHub repository name not found. URL: ${GITHUB_URL}, Tag Name: ${GITHUB_TAG_NAME}`
-      );
-    }
-
-    const cloneDestinationPath = `${OUTPUT_DIR}/${CLONED_REPOSITORIES_DIR}/${gitHubRepoName}/${GITHUB_TAG_NAME}`;
     const downloadsDestinationPath = `${OUTPUT_DIR}/${DOWNLOADS_DIR}/${gitHubRepoName}/${GITHUB_TAG_NAME}`;
 
     await sftpService.connect();
 
-    fs.rmSync(downloadsDestinationPath, {
-      recursive: true,
-      force: true
-    });
-    fs.rmSync(cloneDestinationPath, {
-      recursive: true,
-      force: true
-    });
-    fs.mkdirSync(cloneDestinationPath, { recursive: true });
-
     await Promise.all([
-      gitHubService.cloneRepoByTag(cloneDestinationPath),
+      gitHubService.cloneRepoByTag(clonePath),
       sftpService.downloadFiles(downloadsDestinationPath, REMOTE_ENTRY_POINT)
     ]);
 
     const compareResult = await DiffCheckerService.compare(
       downloadsDestinationPath,
-      cloneDestinationPath,
+      clonePath,
       DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS
     );
 
@@ -93,4 +70,32 @@ async function init() {
   }
 }
 
-cronService.createJob(JOB_TIME, init, true, true);
+async function validateEnvVariables() {
+  try {
+    const requiredEnvVars = [
+      'SFTP_HOST',
+      'SFTP_USER',
+      'SFTP_PASSWORD',
+      'SFTP_PORT',
+      'GITHUB_URL',
+      'GITHUB_TAG_NAME',
+      'REMOTE_ENTRY_POINT'
+    ];
+
+    const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
+
+    if (missingEnvVars.length > 0) {
+      throw new Error(
+        `Missing required environment variables - ${missingEnvVars.join(', ')}`
+      );
+    }
+
+    await init();
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Error:', error.message);
+    }
+  }
+}
+
+cronService.createJob(JOB_TIME, validateEnvVariables, true, true);

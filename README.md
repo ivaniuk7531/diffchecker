@@ -116,27 +116,20 @@ The following environment variables are used to configure the SMTP service for s
 
 - **`SMTP_PASS`**: The password or application-specific token used to authenticate the user with the SMTP server.
 
-- **`SMTP_FROM`**: The email address of the sender.
+- **`SMTP_FROM`**: The email address that appears as the sender.
 
-- **`SMTP_FROM_NAME`**: The display name of the sender (optional)
+- **`SMTP_FROM`**: The recipient's email address.
 
 
 ### Example `.env` File
 ```env
-SMTP_SERVICE=1
+SMTP_SERVICE=gmail
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-secure-password
-SMTP_FROM=email address of the sender
-SMTP_FROM_NAME=name of the sender
-SMTP_TO=recipient email address (to)
-SMTP_TO_NAME=recipient's display name (optional)
+SMTP_FROM=your-email@gmail.com
+SMTP_TO=recipient-email@example.com
 ```
-
-### Security Note
-
-- **Do not hard-code sensitive information in your source code.** Always use environment variables to keep credentials secure.
-- If your SMTP provider supports app-specific passwords or tokens, prefer using them over your main account password.
 
 ---

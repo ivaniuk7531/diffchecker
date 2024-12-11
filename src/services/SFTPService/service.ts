@@ -1,7 +1,11 @@
 import SFTPClient from 'ssh2-sftp-client';
 import { ISFTPServiceOptions } from './type.js';
 import { FileService } from '../FileService/index.js';
-import { REMOTE_ENTRY_POINT, SFTP_DEBUG } from '../../constants/env.js';
+import {
+  GITHUB_TAG_NAME,
+  REMOTE_ENTRY_POINT,
+  SFTP_DEBUG
+} from '../../constants/env.js';
 import { DiffReason, IStatisticsResults } from '../DiffCheckerService/index.js';
 import { DifferenceType } from '../DiffCheckerService/services/EntryService/index.js';
 import pLimit from 'p-limit';
@@ -59,6 +63,11 @@ export class SFTPService {
 
   async downloadFiles(localDir: string, remoteDir: string) {
     try {
+      fs.rmSync(localDir, {
+        recursive: true,
+        force: true
+      });
+
       const stack: { local: string; remote: string }[] = [
         { local: localDir, remote: remoteDir }
       ];
