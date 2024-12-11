@@ -123,13 +123,34 @@ The following environment variables are used to configure the SMTP service for s
 
 ### Example `.env` File
 ```env
-SMTP_SERVICE=gmail
-SMTP_HOST=smtp.gmail.com
+SFTP_HOST=sftp.example.com
+SFTP_USER=remote_user
+SFTP_PASSWORD=securepassword
+SFTP_PORT=22
+
+REMOTE_ENTRY_POINT=/var/www/example
+
+GITHUB_URL=https://github.com/your-repo/your-project
+GITHUB_TAG_NAME=v1.0.0
+
+SFTP_INCLUDE_FILTER=*.php,*.html,*.css
+SFTP_EXCLUDE_FILTER=*.log,*.tmp
+
+DIFF_CHECKER_INCLUDE_FILTER=*.php,*.js
+DIFF_CHECKER_EXCLUDE_FILTER=*.log,*.cache
+
+JOB_TIME=02:00
+
+SMTP_HOST=smtp.mailprovider.com
 SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-secure-password
-SMTP_FROM=your-email@gmail.com
-SMTP_TO=recipient-email@example.com
+SMTP_USER=noreply@example.com
+SMTP_PASS=strongpassword
+
+SMTP_FROM=noreply@example.com
+SMTP_FROM_NAME=Example App
+
+SMTP_TO=admin@example.com
+SMTP_TO_NAME=Administrator
 ```
 
 ---
