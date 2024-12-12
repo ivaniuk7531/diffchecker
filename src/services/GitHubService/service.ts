@@ -14,7 +14,6 @@ export class GitHubService {
   private readonly tag: string;
   private readonly repoName: string = '';
   private readonly clonePath: string = '';
-  private readonly emailService = EmailService.getInstance();
 
   constructor(remoteRepo: string, tag: string, options?: SimpleGitOptions) {
     this.git = simpleGit(options ?? GITHUB_SERVICE_DEFAULT_OPTIONS);
@@ -27,16 +26,23 @@ export class GitHubService {
     this.clonePath = `${OUTPUT_DIR}/${CLONED_REPOSITORIES_DIR}/${this.repoName}/${GITHUB_TAG_NAME}`;
   }
 
-  async cloneRepoByTag(path: string) {
+  async setGitConfig() {
     try {
-      console.log(
-        `Starting to clone the repository from ${this.remoteRepo} into ${path}...`
-      );
+      await this.git.raw([
+        'config',
+        '--global',
+        'url.https://github.com/.insteadOf',
+        'git://github.com/'
+      ]);
+      console.log('Git configuration updated successfully!');
+    } catch (error) {
+      console.error('Error setting Git config:', error);
+    }
+  }
 
-      fs.rmSync(this.clonePath, {
-        recursive: true,
-        force: true
-      });
+  async cloneRepoByTag(path: string): Promise<void> {
+    try {
+      fs.rmSync(this.clonePath, { recursive: true, force: true });
       fs.mkdirSync(this.clonePath, { recursive: true });
 
       await this.git.clone(this.remoteRepo, path, [
@@ -52,12 +58,9 @@ export class GitHubService {
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Error during cloning repository:', error.message);
-
-        await this.emailService.sendEmail(
-          'Error during cloning repository',
-          error.message
-        );
       }
+
+      throw error;
     }
   }
 
