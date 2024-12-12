@@ -33,6 +33,9 @@ async function init() {
     const startTime = performance.now();
 
     const gitHubService = new GitHubService(GITHUB_URL, GITHUB_TAG_NAME);
+
+    await gitHubService.setGitConfig();
+
     const gitHubRepoName = gitHubService.getRepoName();
     const clonePath = gitHubService.getClonePath();
 
@@ -40,10 +43,18 @@ async function init() {
 
     await sftpService.connect();
 
-    await Promise.all([
+    const results = await Promise.allSettled([
       gitHubService.cloneRepoByTag(clonePath),
       sftpService.downloadFiles(downloadsDestinationPath, REMOTE_ENTRY_POINT)
     ]);
+
+    const allResolved = results.every(
+      (result) => result.status === 'fulfilled'
+    );
+
+    if (!allResolved) {
+      throw new Error('Error During Repository Cloning or File Download');
+    }
 
     const compareResult = await DiffCheckerService.compare(
       downloadsDestinationPath,
@@ -61,9 +72,9 @@ async function init() {
     console.log(`Execution time: ${endTime - startTime} milliseconds`);
   } catch (err) {
     if (err instanceof Error) {
-      console.error('An error occurred during initialization:', err.message);
+      console.error('Script execution error:', err.message);
 
-      await emailService.sendEmail('Script initialization error', err.message);
+      await emailService.sendEmail('Script execution error', err.message);
     }
   } finally {
     await sftpService.closeConnection();

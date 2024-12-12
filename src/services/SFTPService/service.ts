@@ -21,7 +21,6 @@ export class SFTPService {
   private readonly password: string;
   private readonly port: number;
   private readonly options?: ISFTPServiceOptions;
-  private readonly emailService = EmailService.getInstance();
 
   constructor(
     host: string,
@@ -118,8 +117,9 @@ export class SFTPService {
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Error downloading:`, error.message);
-        await this.emailService.sendEmail('Error downloading:', error.message);
       }
+
+      throw error;
     }
   }
 
