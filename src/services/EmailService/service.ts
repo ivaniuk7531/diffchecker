@@ -11,10 +11,9 @@ import {
 } from '../../constants/env.js';
 
 export class EmailService {
-  private static instance: EmailService;
   private transporter: Transporter;
 
-  private constructor() {
+   constructor() {
     this.transporter = nodemailer.createTransport({
       service: SMTP_SERVICE,
       host: SMTP_HOST,
@@ -25,13 +24,6 @@ export class EmailService {
         pass: SMTP_PASS
       }
     });
-  }
-
-  public static getInstance(): EmailService {
-    if (!EmailService.instance) {
-      EmailService.instance = new EmailService();
-    }
-    return EmailService.instance;
   }
 
   async sendEmail(subject: string, text: string) {
