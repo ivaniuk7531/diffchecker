@@ -27,7 +27,7 @@ async function init() {
     SFTP_PORT,
     SFTP_SERVICE_DEFAULT_OPTIONS
   );
-  const emailService = new EmailService()
+  const emailService = new EmailService();
 
   try {
     const startTime = performance.now();

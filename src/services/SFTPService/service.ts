@@ -1,18 +1,13 @@
 import SFTPClient from 'ssh2-sftp-client';
 import { ISFTPServiceOptions } from './types.js';
 import { FileService } from '../FileService/index.js';
-import {
-  GITHUB_TAG_NAME,
-  REMOTE_ENTRY_POINT,
-  SFTP_DEBUG
-} from '../../constants/env.js';
+import { REMOTE_ENTRY_POINT, SFTP_DEBUG } from '../../constants/env.js';
 import { DiffReason, IStatisticsResults } from '../DiffCheckerService/index.js';
 import { DifferenceType } from '../DiffCheckerService/services/EntryService/index.js';
 import pLimit from 'p-limit';
 import { DOWNLOAD_CONCURRENCY, UPLOAD_CONCURRENCY } from './constants.js';
 import fs from 'fs';
 import path from 'node:path';
-import { EmailService } from '../EmailService/index.js';
 
 export class SFTPService {
   private client: SFTPClient;
@@ -92,7 +87,12 @@ export class SFTPService {
 
           const isFile = type === '-';
           const isDirectory = type === 'd';
-          const isValid = this.#filter(isFile, remoteFilePath);
+          const isValid = FileService.shouldIncludeFile(
+            isFile,
+            remoteFilePath,
+            this.options?.includeFilter,
+            this.options?.excludeFilter
+          );
 
           if (!isValid) {
             continue;
@@ -176,24 +176,5 @@ export class SFTPService {
         console.error(`Error upload files: ${err.message}`);
       }
     }
-  }
-
-  #filter(isFile: boolean, path: string) {
-    if (
-      isFile &&
-      this?.options?.includeFilter &&
-      !FileService.match(path, this?.options?.includeFilter)
-    ) {
-      return false;
-    }
-
-    if (
-      this?.options?.excludeFilter &&
-      FileService.match(path, this?.options?.excludeFilter)
-    ) {
-      return false;
-    }
-
-    return true;
   }
 }

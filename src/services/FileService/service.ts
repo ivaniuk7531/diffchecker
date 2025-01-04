@@ -132,4 +132,21 @@ export class FileService {
       });
     });
   }
+
+  static shouldIncludeFile(
+    isFile: boolean,
+    path: string,
+    includeFilter?: string,
+    excludeFilter?: string
+  ) {
+    if (isFile && includeFilter && !FileService.match(path, includeFilter)) {
+      return false;
+    }
+
+    if (excludeFilter && FileService.match(path, excludeFilter)) {
+      return false;
+    }
+
+    return true;
+  }
 }
