@@ -164,7 +164,7 @@ The following environment variables are used to configure the SMTP service for s
 
 ### Example `.env` File
 ```env
-CONNECTION_TYPE=FTP;
+CONNECTION_TYPE=FTP
 FTP_HOST=ftp.example.com
 
 FTP_USER=myUsername
