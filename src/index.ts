@@ -1,32 +1,25 @@
-import { DiffCheckerService } from './services/DiffCheckerService/service.js';
-import { SFTPService } from './services/SFTPService/service.js';
 import { GitHubService } from './services/GitHubService/index.js';
 import { CronService } from './services/CroneService/index.js';
 import { DOWNLOADS_DIR, OUTPUT_DIR } from './constants/defaultPaths.js';
 import {
+  CONNECTION_TYPE,
   GITHUB_TAG_NAME,
   GITHUB_URL,
   JOB_TIME,
-  REMOTE_ENTRY_POINT,
-  SFTP_HOST,
-  SFTP_PASSWORD,
-  SFTP_PORT,
-  SFTP_USER
+  REMOTE_ENTRY_POINT
 } from './constants/env.js';
-import { SFTP_SERVICE_DEFAULT_OPTIONS } from './services/SFTPService/index.js';
-import { DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS } from './services/DiffCheckerService/constants.js';
 import { EmailService } from './services/EmailService/index.js';
+import { DiffCheckerService } from './services/DiffCheckerService/index.js';
+import { DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS } from './services/DiffCheckerService/constants.js';
+import {
+  ConnectionService,
+  ConnectionType
+} from './services/ConnectionService/index.js';
 
 const cronService = new CronService();
 
 async function init() {
-  const sftpService = new SFTPService(
-    SFTP_HOST,
-    SFTP_USER,
-    SFTP_PASSWORD,
-    SFTP_PORT,
-    SFTP_SERVICE_DEFAULT_OPTIONS
-  );
+  const client = ConnectionService.getClient(CONNECTION_TYPE);
   const emailService = new EmailService();
 
   try {
@@ -41,11 +34,11 @@ async function init() {
 
     const downloadsDestinationPath = `${OUTPUT_DIR}/${DOWNLOADS_DIR}/${gitHubRepoName}/${GITHUB_TAG_NAME}`;
 
-    await sftpService.connect();
+    await client.connect();
 
     const results = await Promise.allSettled([
       gitHubService.cloneRepoByTag(clonePath),
-      sftpService.downloadFiles(downloadsDestinationPath, REMOTE_ENTRY_POINT)
+      client.downloadFiles(downloadsDestinationPath, REMOTE_ENTRY_POINT)
     ]);
 
     const allResolved = results.every(
@@ -62,7 +55,7 @@ async function init() {
       DIFF_CHECKER_DEFAULT_SERVICE_OPTIONS
     );
 
-    const uploadedFiles = await sftpService.uploadFiles(compareResult);
+    const uploadedFiles = await client.uploadFiles(compareResult);
 
     if (uploadedFiles && uploadedFiles?.length !== 0) {
       await emailService.sendUploadReport(uploadedFiles, gitHubRepoName);
@@ -77,20 +70,32 @@ async function init() {
       await emailService.sendEmail('Script execution error', err.message);
     }
   } finally {
-    await sftpService.closeConnection();
+    await client.closeConnection();
   }
 }
 
 async function validateEnvVariables() {
   try {
-    const requiredEnvVars = [
-      'SFTP_HOST',
-      'SFTP_USER',
-      'SFTP_PASSWORD',
-      'SFTP_PORT',
+    const FTPEnvs = ['FTP_HOST', 'FTP_USER', 'FTP_PASSWORD', 'FTP_PORT'];
+    const SFTPEnvs = ['SFTP_HOST', 'SFTP_USER', 'SFTP_PASSWORD', 'SFTP_PORT'];
+
+    const coreEnvVars = [
+      'CONNECTION_TYPE',
       'GITHUB_URL',
       'GITHUB_TAG_NAME',
-      'REMOTE_ENTRY_POINT'
+      'REMOTE_ENTRY_POINT',
+      'SMTP_USER',
+      'SMTP_PASS',
+      'SMTP_FROM',
+      'SMTP_FROM_NAME',
+      'SMTP_TO',
+      'SMTP_TO_NAME'
+    ];
+
+    const requiredEnvVars = [
+      ...coreEnvVars,
+      ...(CONNECTION_TYPE === ConnectionType.FTP ? FTPEnvs : []),
+      ...(CONNECTION_TYPE === ConnectionType.SFTP ? SFTPEnvs : [])
     ];
 
     const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);

@@ -1,30 +1,32 @@
-import SFTPClient from 'ssh2-sftp-client';
-import { ISFTPServiceOptions } from './types.js';
-import { FileService } from '../FileService/index.js';
-import { REMOTE_ENTRY_POINT, SFTP_DEBUG } from '../../constants/env.js';
-import { DiffReason, IStatisticsResults } from '../DiffCheckerService/index.js';
-import { DifferenceType } from '../DiffCheckerService/services/EntryService/index.js';
-import pLimit from 'p-limit';
-import { DOWNLOAD_CONCURRENCY, UPLOAD_CONCURRENCY } from './constants.js';
+import { Client } from 'basic-ftp';
+import { IFTPServiceOptions } from './types.js';
+import { FileService } from '../../../FileService/index.js';
+import {
+  DiffReason,
+  IStatisticsResults
+} from '../../../DiffCheckerService/index.js';
+import { DifferenceType } from '../../../DiffCheckerService/services/EntryService/index.js';
 import fs from 'fs';
 import path from 'node:path';
+import { REMOTE_ENTRY_POINT } from '../../../../constants/env.js';
+import { IConnectionClient } from '../../types.js';
 
-export class SFTPService {
-  private client: SFTPClient;
+export class FTPService implements IConnectionClient {
+  private client: Client;
   private readonly host: string;
   private readonly username: string;
   private readonly password: string;
   private readonly port: number;
-  private readonly options?: ISFTPServiceOptions;
+  private readonly options?: IFTPServiceOptions;
 
   constructor(
     host: string,
     username: string,
     password: string,
     port: number,
-    options: ISFTPServiceOptions = {}
+    options: IFTPServiceOptions = {}
   ) {
-    this.client = new SFTPClient();
+    this.client = new Client();
     this.host = host;
     this.username = username;
     this.password = password;
@@ -34,16 +36,13 @@ export class SFTPService {
 
   async connect() {
     try {
-      await this.client.connect({
+      this.client.ftp.verbose = !!this.options?.debug;
+      await this.client.access({
         host: this.host,
-        username: this.username,
+        user: this.username,
         password: this.password,
         port: this.port,
-        debug: SFTP_DEBUG
-          ? (msg) => {
-              console.error(msg);
-            }
-          : undefined
+        secure: true
       });
     } catch (error) {
       console.error('Error connecting to SFTP server:', error);
@@ -52,7 +51,7 @@ export class SFTPService {
   }
 
   async closeConnection() {
-    await this.client.end();
+    this.client.close();
   }
 
   async downloadFiles(localDir: string, remoteDir: string) {
@@ -66,8 +65,6 @@ export class SFTPService {
         { local: localDir, remote: remoteDir }
       ];
 
-      const limit = pLimit(DOWNLOAD_CONCURRENCY);
-
       while (stack.length > 0) {
         const { local, remote } = stack.pop()!;
 
@@ -77,16 +74,11 @@ export class SFTPService {
           fs.mkdirSync(local, { recursive: true });
         }
 
-        const downloadTasks: Promise<void>[] = [];
-
         for (const file of files) {
-          const { name, type } = file;
-
+          const { name, isFile, isDirectory } = file;
           const remoteFilePath = path.join(remote, name);
           const localFilePath = path.join(local, name);
 
-          const isFile = type === '-';
-          const isDirectory = type === 'd';
           const isValid = FileService.shouldIncludeFile(
             isFile,
             remoteFilePath,
@@ -101,24 +93,18 @@ export class SFTPService {
           if (isDirectory) {
             stack.push({ local: localFilePath, remote: remoteFilePath });
           }
-          console.log('Downloading file:', remoteFilePath);
 
           if (isFile) {
-            downloadTasks.push(
-              limit(async () => {
-                await this.client.get(remoteFilePath, localFilePath);
-              })
-            );
+            console.log('Downloading file:', remoteFilePath);
+
+            await this.client.downloadTo(localFilePath, remoteFilePath);
           }
         }
-
-        await Promise.all(downloadTasks);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Error downloading:`, error.message);
       }
-
       throw error;
     }
   }
@@ -128,10 +114,6 @@ export class SFTPService {
       if (!data?.diffSet || data?.diffSet.length === 0) {
         return;
       }
-
-      const uploadLimit = pLimit(UPLOAD_CONCURRENCY);
-
-      const uploadTasks: Promise<void>[] = [];
 
       const uploadedFiles: string[] = [];
 
@@ -151,24 +133,15 @@ export class SFTPService {
             `${remoteDirPath}/${diff.name2}`
           );
 
-          const isDirExists = await this.client.exists(remoteDirPath);
+          await this.client.ensureDir(remoteDirPath);
 
-          if (!isDirExists) {
-            await this.client.mkdir(remoteDirPath, true);
-          }
           console.log('Uploading file:', remoteFilePath);
 
-          uploadTasks.push(
-            uploadLimit(async () => {
-              await this.client.put(localFilePath, remoteFilePath);
+          await this.client.uploadFrom(localFilePath, `${diff.name2}`);
 
-              uploadedFiles.push(remoteFilePath);
-            })
-          );
+          uploadedFiles.push(remoteFilePath);
         }
       }
-
-      await Promise.all(uploadTasks);
 
       return uploadedFiles;
     } catch (err: unknown) {

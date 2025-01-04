@@ -13,7 +13,7 @@ import {
 export class EmailService {
   private transporter: Transporter;
 
-   constructor() {
+  constructor() {
     this.transporter = nodemailer.createTransport({
       service: SMTP_SERVICE,
       host: SMTP_HOST,
