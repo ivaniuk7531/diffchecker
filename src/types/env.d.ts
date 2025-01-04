@@ -1,6 +1,15 @@
 declare namespace NodeJS {
   type BooleanString = 'true' | 'false';
+
   interface ProcessEnv {
+    CONNECTION_TYPE: string;
+
+    FTP_HOST: string;
+    FTP_USER: string;
+    FTP_PASSWORD: string;
+    FTP_PORT: number;
+    FTP_DEBUG: BooleanString;
+
     SFTP_HOST: string;
     SFTP_USER: string;
     SFTP_PASSWORD: string;
@@ -11,6 +20,9 @@ declare namespace NodeJS {
 
     GITHUB_URL: string;
     GITHUB_TAG_NAME: string;
+
+    FTP_INCLUDE_FILTER: string;
+    FTP_EXCLUDE_FILTER: string;
 
     SFTP_INCLUDE_FILTER: string;
     SFTP_EXCLUDE_FILTER: string;
