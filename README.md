@@ -48,6 +48,17 @@ This section should provide clear instructions for setting up the environment an
 
 This project requires several environment variables to be set for proper functionality. Below are the required variables and their descriptions:
 
+### Connection type
+
+- **CONNECTION_TYPE**: Specifies the connection protocol (FTP or SFTP) for the server, determining the required environment variables for connection. Only one connection type can be used at a time.
+
+### FTP Configuration
+
+- **FTP_HOST**: The hostname or IP address of the FTP server.
+- **FTP_USER**: The username for the FTP connection.
+- **FTP_PASSWORD**: The password for the FTP connection.
+- **FTP_PORT**: The port used for the FTP connection (default is typically 21).
+
 ### SFTP Configuration
 
 - **SFTP_HOST**: The hostname or IP address of the SFTP server.
@@ -153,15 +164,21 @@ The following environment variables are used to configure the SMTP service for s
 
 ### Example `.env` File
 ```env
-SFTP_HOST=sftp.example.com
-SFTP_USER=remote_user
-SFTP_PASSWORD=securepassword
-SFTP_PORT=22
+CONNECTION_TYPE=FTP;
+FTP_HOST=ftp.example.com
+
+FTP_USER=myUsername
+FTP_PASSWORD=myPassword123
+FTP_PORT=21
+FTP_DEBUG=true
 
 REMOTE_ENTRY_POINT=/var/www/example
 
 GITHUB_URL=https://github.com/your-repo/your-project
 GITHUB_TAG_NAME=v1.0.0
+
+FTP_INCLUDE_FILTER=*.php,*.html,*.css
+FTP_EXCLUDE_FILTER=*.log,*.tmp
 
 SFTP_INCLUDE_FILTER=*.php,*.html,*.css
 SFTP_EXCLUDE_FILTER=*.log,*.tmp
@@ -177,6 +194,7 @@ DIFF_CHECKER_EXCLUDE_FILTER=*.log,*.cache
 
 JOB_TIME=02:00
 
+SMTP_SERVICE=gmail
 SMTP_HOST=smtp.mailprovider.com
 SMTP_PORT=587
 SMTP_USER=noreply@example.com
