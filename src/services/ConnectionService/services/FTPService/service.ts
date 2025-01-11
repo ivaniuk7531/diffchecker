@@ -76,7 +76,9 @@ export class FTPService implements IConnectionClient {
 
         for (const file of files) {
           const { name, isFile, isDirectory } = file;
-          const remoteFilePath = path.join(remote, name);
+          const remoteFilePath = path
+            .normalize(path.join(remote, name))
+            .replace(/\\/g, '/');
           const localFilePath = path.join(local, name);
 
           const isValid = FileService.shouldIncludeFile(
@@ -103,7 +105,7 @@ export class FTPService implements IConnectionClient {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Error downloading:`, error.message);
+        console.error(`Error downloading:`, error);
       }
       throw error;
     }
@@ -126,12 +128,12 @@ export class FTPService implements IConnectionClient {
 
         if (isDifferentContent || isMissingOnServer) {
           const localFilePath = path.normalize(`${diff.path2}/${diff.name2}`);
-          const remoteDirPath = path.normalize(
-            `${REMOTE_ENTRY_POINT}${diff.relativePath}`
-          );
-          const remoteFilePath = path.normalize(
-            `${remoteDirPath}/${diff.name2}`
-          );
+          const remoteDirPath = path
+            .normalize(`${REMOTE_ENTRY_POINT}${diff.relativePath}`)
+            .replace(/\\/g, '/');
+          const remoteFilePath = path
+            .normalize(`${remoteDirPath}/${diff.name2}`)
+            .replace(/\\/g, '/');
 
           await this.client.ensureDir(remoteDirPath);
 
@@ -144,9 +146,9 @@ export class FTPService implements IConnectionClient {
       }
 
       return uploadedFiles;
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error(`Error upload files: ${err.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error upload files:', error);
       }
     }
   }
