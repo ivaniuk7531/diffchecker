@@ -6,7 +6,8 @@ import {
   GITHUB_TAG_NAME,
   GITHUB_URL,
   JOB_TIME,
-  REMOTE_ENTRY_POINT
+  REMOTE_ENTRY_POINT,
+  SERVER_NAME_UNIQUE_IDENTIFIER
 } from './constants/env.js';
 import { EmailService } from './services/EmailService/index.js';
 import { DiffCheckerService } from './services/DiffCheckerService/index.js';
@@ -32,7 +33,7 @@ async function init() {
     const gitHubRepoName = gitHubService.getRepoName();
     const clonePath = gitHubService.getClonePath();
 
-    const downloadsDestinationPath = `${OUTPUT_DIR}/${DOWNLOADS_DIR}/${gitHubRepoName}/${GITHUB_TAG_NAME}`;
+    const downloadsDestinationPath = `${OUTPUT_DIR}/${DOWNLOADS_DIR}/${SERVER_NAME_UNIQUE_IDENTIFIER}_${gitHubRepoName}_${GITHUB_TAG_NAME}`;
 
     await client.connect();
 
@@ -80,6 +81,7 @@ async function validateEnvVariables() {
     const SFTPEnvs = ['SFTP_HOST', 'SFTP_USER', 'SFTP_PASSWORD', 'SFTP_PORT'];
 
     const coreEnvVars = [
+      'SERVER_NAME_UNIQUE_IDENTIFIER',
       'CONNECTION_TYPE',
       'GITHUB_URL',
       'GITHUB_TAG_NAME',

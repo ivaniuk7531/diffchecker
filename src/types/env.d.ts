@@ -2,6 +2,7 @@ declare namespace NodeJS {
   type BooleanString = 'true' | 'false';
 
   interface ProcessEnv {
+    SERVER_NAME_UNIQUE_IDENTIFIER: string;
     CONNECTION_TYPE: string;
 
     FTP_HOST: string;
