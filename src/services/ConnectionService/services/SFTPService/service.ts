@@ -10,7 +10,7 @@ import { DifferenceType } from '../../../DiffCheckerService/services/EntryServic
 import pLimit from 'p-limit';
 import { DOWNLOAD_CONCURRENCY, UPLOAD_CONCURRENCY } from './constants.js';
 import fs from 'fs';
-import path from 'node:path';
+import path from 'path';
 import { IConnectionClient } from '../../types.js';
 
 export class SFTPService implements IConnectionClient {
@@ -86,7 +86,9 @@ export class SFTPService implements IConnectionClient {
         for (const file of files) {
           const { name, type } = file;
 
-          const remoteFilePath = path.join(remote, name);
+          const remoteFilePath = path
+            .normalize(path.join(remote, name))
+            .replace(/\\/g, '/');
           const localFilePath = path.join(local, name);
 
           const isFile = type === '-';
@@ -148,12 +150,12 @@ export class SFTPService implements IConnectionClient {
 
         if (isDifferentContent || isMissingOnServer) {
           const localFilePath = path.normalize(`${diff.path2}/${diff.name2}`);
-          const remoteDirPath = path.normalize(
-            `${REMOTE_ENTRY_POINT}${diff.relativePath}`
-          );
-          const remoteFilePath = path.normalize(
-            `${remoteDirPath}/${diff.name2}`
-          );
+          const remoteDirPath = path
+            .normalize(`${REMOTE_ENTRY_POINT}${diff.relativePath}`)
+            .replace(/\\/g, '/');
+          const remoteFilePath = path
+            .normalize(`${remoteDirPath}/${diff.name2}`)
+            .replace(/\\/g, '/');
 
           const isDirExists = await this.client.exists(remoteDirPath);
 
