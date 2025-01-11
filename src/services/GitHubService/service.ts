@@ -61,7 +61,7 @@ export class GitHubService {
       );
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error('Error during cloning repository:', error.message);
+        console.error('Error during cloning repository:', error);
       }
 
       throw error;

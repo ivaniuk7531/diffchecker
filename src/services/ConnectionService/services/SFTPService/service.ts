@@ -122,7 +122,7 @@ export class SFTPService implements IConnectionClient {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Error downloading:`, error.message);
+        console.error(`Error downloading:`, error);
       }
 
       throw error;
@@ -177,9 +177,9 @@ export class SFTPService implements IConnectionClient {
       await Promise.all(uploadTasks);
 
       return uploadedFiles;
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error(`Error upload files: ${err.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error upload files:', error);
       }
     }
   }

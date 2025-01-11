@@ -105,7 +105,7 @@ export class FTPService implements IConnectionClient {
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Error downloading:`, error.message);
+        console.error(`Error downloading:`, error);
       }
       throw error;
     }
@@ -146,9 +146,9 @@ export class FTPService implements IConnectionClient {
       }
 
       return uploadedFiles;
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error(`Error upload files: ${err.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error upload files:', error);
       }
     }
   }
