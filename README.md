@@ -48,6 +48,11 @@ This section should provide clear instructions for setting up the environment an
 
 This project requires several environment variables to be set for proper functionality. Below are the required variables and their descriptions:
 
+### Unique server name
+
+- **UNIQUE_SERVER_NAME**: This environment variable defines a unique identifier for the server instance. It ensures that each server instance in the system has a distinct name, preventing conflicts and facilitating easier management in a multi-server setup.
+
+
 ### Connection type
 
 - **CONNECTION_TYPE**: Specifies the connection protocol (FTP or SFTP) for the server, determining the required environment variables for connection. Only one connection type can be used at a time.
@@ -164,9 +169,10 @@ The following environment variables are used to configure the SMTP service for s
 
 ### Example `.env` File
 ```env
+UNIQUE_SERVER_NAME=my_unique_server_01
 CONNECTION_TYPE=FTP
-FTP_HOST=ftp.example.com
 
+FTP_HOST=ftp.example.com
 FTP_USER=myUsername
 FTP_PASSWORD=myPassword123
 FTP_PORT=21

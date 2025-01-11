@@ -3,6 +3,8 @@ import { ConnectionType } from '../services/ConnectionService/index.js';
 
 dotenv.config();
 
+export const SERVER_NAME_UNIQUE_IDENTIFIER = process.env
+  .SERVER_NAME_UNIQUE_IDENTIFIER as ConnectionType;
 export const CONNECTION_TYPE = process.env.CONNECTION_TYPE as ConnectionType;
 
 export const FTP_HOST = process.env.FTP_HOST;
